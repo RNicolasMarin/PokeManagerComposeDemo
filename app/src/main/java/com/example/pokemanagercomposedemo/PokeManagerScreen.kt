@@ -13,12 +13,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pokemanagercomposedemo.ui.ChooseDataAccessModeScreen
 import com.example.pokemanagercomposedemo.ui.ChooseNameLanguagesScreen
+import com.example.pokemanagercomposedemo.ui.DownloadingAllDataScreen
 import com.example.pokemanagercomposedemo.ui.SetUpViewModel
 
 enum class PokeManagerScreen {
     NamesLanguages,
     DataAccessMode,
-    DownloadingAllData
+    DownloadingAllData,
+    SetUpEnding
 }
 
 @Composable
@@ -55,11 +57,26 @@ fun PokeManagerApp(
                 },
                 isContinueButtonEnabled = uiState.dataAccessModeContinueEnabled,
                 onContinueButtonClicked = {
-
+                    if (uiState.dataAccessModeDownloadAllSelected) {
+                        navController.navigate(PokeManagerScreen.DownloadingAllData.name)
+                    } else {
+                        navController.navigate(PokeManagerScreen.SetUpEnding.name)
+                    }
                 }
             )
         }
         composable(route = PokeManagerScreen.DownloadingAllData.name) {
+            viewModel.simulateDownload()
+            DownloadingAllDataScreen(
+                progress = uiState.downloadProgress,
+                progressToShow = uiState.downloadProgressToShow,
+                onContinueButtonClicked = {
+                    navController.navigate(PokeManagerScreen.SetUpEnding.name)
+                },
+                isContinueButtonEnabled = uiState.downloadContinueEnabled
+            )
+        }
+        composable(route = PokeManagerScreen.SetUpEnding.name) {
 
         }
     }

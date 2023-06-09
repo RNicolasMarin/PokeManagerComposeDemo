@@ -9,4 +9,9 @@ data class SetUpUiState(
     val dataAccessModeDownloadAllSelected: Boolean = false,
     val dataAccessModeOnlyRequestSelected: Boolean = false,
     val dataAccessModeContinueEnabled: Boolean = false,
+
+    val isDownloading: Boolean = false,
+    val downloadProgress: Float = 0.0f,
+    val downloadProgressToShow: Int = 0,
+    val downloadContinueEnabled: Boolean = false,
 )

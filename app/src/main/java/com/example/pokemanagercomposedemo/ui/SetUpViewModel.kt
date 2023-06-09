@@ -1,13 +1,16 @@
 package com.example.pokemanagercomposedemo.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.pokemanagercomposedemo.data.SetUpUiState
 import com.example.pokemanagercomposedemo.ui.ChooseDataAccessModeOption.*
 import com.example.pokemanagercomposedemo.ui.ChooseNameLanguagesOption.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class SetUpViewModel: ViewModel() {
 
@@ -42,6 +45,29 @@ class SetUpViewModel: ViewModel() {
                     dataAccessModeOnlyRequestSelected = requestValue,
                     dataAccessModeContinueEnabled = continueEnabled
                 )
+            }
+        }
+    }
+
+    fun simulateDownload() {
+        if (_uiState.value.isDownloading) return
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                isDownloading = true
+            )
+        }
+        viewModelScope.launch {
+            repeat(11) {
+                delay(500)
+                _uiState.update { currentState ->
+                    val newProgressValue = it.toFloat() / 10
+                    currentState.copy(
+                        downloadProgress = newProgressValue,
+                        downloadProgressToShow = it * 10,
+                        downloadContinueEnabled = newProgressValue == 1.0f
+                    )
+                }
             }
         }
     }
